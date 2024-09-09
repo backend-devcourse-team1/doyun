@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Coffee</title>
+  <script>
+    // 총합 및 총 수량 계산 함수
+    function calculateTotals() {
+      let totalAmount = 0;
+      let totalQuantity = 0;
+
+      const prices = document.querySelectorAll('.price');
+      const quantities = document.querySelectorAll('.quantity');
+
+      // 모든 상품의 가격과 수량을 합산
+      prices.forEach((priceElement, index) => {
+        const price = parseFloat(priceElement.textContent);
+        const quantity = parseInt(quantities[index].value);
+
+        totalAmount += price * quantity;
+        totalQuantity += quantity;
+      });
+
+      // 총합 및 총 수량 표시
+      document.getElementById('totalAmount').textContent = "총합: " + totalAmount + "원";
+      document.getElementById('totalQuantity').textContent = "총 수량: " + totalQuantity;
+
+      // 숨겨진 input 필드에 총합 및 총 수량 값 설정
+      document.getElementById('totalInput').value = totalAmount;
+      document.getElementById('quantityInput').value = totalQuantity;
+    }
+  </script>
+</head>
+<body>
+<h1>Order Coffee</h1>
+<form action="/orders/create" method="post">
+  <label for="email">Email:</label>
+  <input type="email" id="email" name="email" required><br>
+
+  <label for="address">Address:</label>
+  <input type="text" id="address" name="address" required><br>
+
+  <label for="postcode">Postcode:</label>
+  <input type="text" id="postcode" name="postcode" required><br>
+
+  <button type="submit">Place Order</button>
+</form>
+
+<div>
+  <form action="/order/start" method="post">
+    <table>
+      <thead>
+      <tr>
+        <th>상품명</th>
+        <th>설명</th>
+        <th>가격</th>
+        <th>수량</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="product : ${list}">
+        <td th:text="${product.getProduct_name()}"></td>
+        <td th:text="${product.getDescription()}"></td>
+        <td class="price" th:text="${product.getPrice()}"></td>
+        <td>
+          <input class="quantity" name="quantity" type="number" value="0" min="0" oninput="calculateTotals()">
+          <input type="hidden" name="product_id" th:value="${product.getProduct_id()}">
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <!-- 총합 및 총 수량을 서버로 전송할 수 있는 숨겨진 필드 -->
+    <input type="hidden" id="totalInput" name="total" value="0">
+    <input type="hidden" id="quantityInput" name="quantities" value="0">
+
+    <!-- 총합 및 총 수량 표시 -->
+    <h3 id="totalAmount">총합: 0원</h3>
+    <h3 id="totalQuantity">총 수량: 0</h3>
+    <button type="submit">주문하기</button>
+  </form>
+</div>
+
+</body>
+</html>

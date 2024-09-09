@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>상품 작성</title>
+</head>
+
+<style>
+    .layout{
+        width : 500px;
+        margin : 0 auto;
+        margin-top : 40px;
+    }
+
+    .layout input {
+        width : 100%;
+        box-sizing : border-box;
+    }
+
+    .layout textarea{
+        width : 100%;
+        margin-top: 10px;
+        min-height: 300px;
+    }
+</style>
+
+<body>
+<div class="layout">
+    <form th:action="@{/products/update/{id}(id = ${product.getProduct_id()})}" method="post">
+        제품명 : <input name="product_name" type="text" th:value="${product.getProduct_name()}">
+        카테고리 : <input name="category" type="text" th:value="${product.getCategory()}">
+        가격 : <input name="price" type="number" th:value="${product.getPrice()}">
+        후기 : <input name="description" type="text" th:value="${product.getDescription()}">
+        <button type="submit">수정</button>
+    </form>
+
+</div>
+</body>
+</html>
